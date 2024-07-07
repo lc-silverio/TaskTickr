@@ -1,0 +1,9 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TaskTickr.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Jira_GetTasks" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/api/2/search?jql=assignee=currentuser()</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
