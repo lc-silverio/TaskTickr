@@ -14,31 +14,38 @@ namespace TaskTickr
         /// <summary>
         /// The logger handler
         /// </summary>
-        private readonly SupportLoggerService _logger;
+        private readonly ISupportLoggerService _logger;
 
         /// <summary>
         /// The work logger
         /// </summary>
-        private readonly WorkLoggerService _workLogger;
+        private readonly IWorkLoggerService _workLogger;
 
         /// <summary>
         /// The jira service
         /// </summary>
         private readonly IJiraService _jiraService;
-        public MainWindow()
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// </summary>
+        /// <param name="jiraService">The jira service.</param>
+        /// <param name="workLoggerService">The work logger service.</param>
+        /// <param name="supportLoggerService">The support logger service.</param>
+        public MainWindow(IJiraService jiraService, IWorkLoggerService workLoggerService, ISupportLoggerService supportLoggerService)
         {
             InitializeComponent();
             SetWindowStartingPosition();
 
             // Logging
-            _logger = new SupportLoggerService();
-            _workLogger = new WorkLoggerService();
+            _logger = supportLoggerService;
+            _workLogger = workLoggerService;
 
             _logger.AddLog("Starting TaskTickr", LogLevel.Information);
             _workLogger.LogWork("Test", TimeSpan.FromSeconds(1));
 
             // Jira
-            _jiraService = new JiraService();
+            _jiraService = jiraService;
 
             _jiraService.GetUserTasks();
             _jiraService.LogTaskTime("1", TimeSpan.FromSeconds(1));

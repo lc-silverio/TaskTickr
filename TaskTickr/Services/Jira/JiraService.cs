@@ -17,11 +17,6 @@ namespace TaskTickr.Services.Jira
     {
         #region Properties
         /// <summary>
-        /// The HTTP client
-        /// </summary>
-        private readonly HttpClient _httpClient;
-
-        /// <summary>
         /// The logger
         /// </summary>
         private readonly ISupportLoggerService _logger;
@@ -30,6 +25,11 @@ namespace TaskTickr.Services.Jira
         /// The settings service
         /// </summary>
         private readonly ISettingsService _settingsService;
+
+        /// <summary>
+        /// The HTTP client
+        /// </summary>
+        private readonly HttpClient _httpClient;
 
         /// <summary>
         /// The settings
@@ -46,12 +46,12 @@ namespace TaskTickr.Services.Jira
         /// <summary>
         /// Initializes a new instance of the <see cref="JiraService"/> class.
         /// </summary>
-        public JiraService()
+        public JiraService(SupportLoggerService supportLoggerService, SettingsService settingsService)
         {
-            _logger = new SupportLoggerService();
+            _logger = supportLoggerService;
 
             // Load api settings
-            _settingsService = new SettingsService();
+            _settingsService = settingsService;
             _settings = _settingsService.GetSettings();
 
             // Set target and credential settings
