@@ -11,6 +11,8 @@
 - Customizable settings: Adjust the filter to your needs and get a tailored list of tasks that suits you needs
 - Report generator: TaskTickr also generates a CSV file with all your logged task that can be imported and analised in any CSV compatible platform
 
+![TaskTickr logo](./img/UI.png)
+
 ## Table of Contents
 - [Purpose](#purpose)
 - [Features](#features)
