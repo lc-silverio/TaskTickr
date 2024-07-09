@@ -1,7 +1,7 @@
-﻿namespace TaskTickr.Services.Settings
+﻿namespace TaskTickr.Domain.DTO
 {
     /// <summary>
-    /// Defines the settings object
+    /// Defines the api settings object
     /// </summary>
     public class APISettings
     {
@@ -11,22 +11,22 @@
         /// <value>
         /// The target instance URL.
         /// </value>
-        public required string TargetInstanceURL { get; set; }
+        public required string URL { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the user.
+        /// Gets or sets the email
         /// </summary>
         /// <value>
-        /// The name of the user.
+        /// The email of the user.
         /// </value>
-        public required string UserName { get; set; }
+        public required string Email { get; set; }
 
         /// <summary>
-        /// Gets or sets the password.
+        /// Gets or sets the API key.
         /// </summary>
         /// <value>
-        /// The password.
+        /// The API key
         /// </value>
-        public required string Password { get; set; }
+        public required string APIKey { get; set; }
     }
 }
