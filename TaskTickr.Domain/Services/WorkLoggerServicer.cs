@@ -1,8 +1,9 @@
 ﻿using Serilog;
 using Serilog.Events;
 using System.IO;
+using TaskTickr.Domain.Interfaces;
 
-namespace TaskTickr.Services.WorkLogger
+namespace TaskTickr.Domain.Services
 {
     /// <summary>
     /// Defines methods related with logging of work hours
@@ -35,7 +36,7 @@ namespace TaskTickr.Services.WorkLogger
                           retainedFileCountLimit: null)
             .CreateLogger();
 
-            // Write CSV headers if the file is new
+            // Create a new file and add headers
             if (!File.Exists(logFilePath))
             {
                 File.AppendAllText(logFilePath, "Timestamp,TaskName,ElapsedTime\n");
@@ -49,10 +50,10 @@ namespace TaskTickr.Services.WorkLogger
         /// Logs the elapsed task time
         /// </summary>
         /// <param name="taskName">Name of the task.</param>
-        /// <param name="elapsedTaskTime">The time span between start and end of work time</param>
+        /// <param name="elapsedTaskTime">The time span between start and end of the timer</param>
         public void LogWork(string taskName, TimeSpan elapsedTaskTime)
         {
-            _logger.Information("{TaskName},{ElapsedTime}", taskName, elapsedTaskTime);
+            _logger.Information("{TaskName},{ElapsedTime}", taskName, elapsedTaskTime.TotalMinutes);
         }
         #endregion
     }
