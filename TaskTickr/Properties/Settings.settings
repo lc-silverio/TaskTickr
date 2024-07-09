@@ -5,5 +5,14 @@
     <Setting Name="Jira_GetTasks" Type="System.String" Scope="User">
       <Value Profile="(Default)">/api/2/search?jql=assignee=currentuser()</Value>
     </Setting>
+    <Setting Name="Jira_FilterQuery" Type="System.String" Scope="User">
+      <Value Profile="(Default)">assignee=currentuser() AND status NOT IN ('Declined', 'Canceled', 'Ready for testing', 'Released to Test', 'Ready for Deployment', 'Released to Production', 'Done', 'Closed')</Value>
+    </Setting>
+    <Setting Name="Jira_TaskSearchEndpoint" Type="System.String" Scope="User">
+      <Value Profile="(Default)">rest/api/2/search?jql=</Value>
+    </Setting>
+    <Setting Name="Jira_LogTaskTime" Type="System.String" Scope="User">
+      <Value Profile="(Default)">rest/api/2/issue/TASK_ID/worklog</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

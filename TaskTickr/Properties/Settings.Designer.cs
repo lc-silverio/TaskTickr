@@ -34,5 +34,43 @@ namespace TaskTickr.Properties {
                 this["Jira_GetTasks"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("assignee=currentuser() AND status NOT IN (\'Declined\', \'Canceled\', \'Ready for test" +
+            "ing\', \'Released to Test\', \'Ready for Deployment\', \'Released to Production\', \'Don" +
+            "e\', \'Closed\')")]
+        public string Jira_FilterQuery {
+            get {
+                return ((string)(this["Jira_FilterQuery"]));
+            }
+            set {
+                this["Jira_FilterQuery"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("rest/api/2/search?jql=")]
+        public string Jira_TaskSearchEndpoint {
+            get {
+                return ((string)(this["Jira_TaskSearchEndpoint"]));
+            }
+            set {
+                this["Jira_TaskSearchEndpoint"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("rest/api/2/issue/TASK_ID/worklog")]
+        public string Jira_LogTaskTime {
+            get {
+                return ((string)(this["Jira_LogTaskTime"]));
+            }
+            set {
+                this["Jira_LogTaskTime"] = value;
+            }
+        }
     }
 }
