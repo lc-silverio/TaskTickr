@@ -82,7 +82,8 @@ namespace TaskTickr.Domain.Services
             {
                 if (!File.Exists(filePath))
                 {
-                    throw new FileNotFoundException($"The settings file 'TaskTickr.ini' was not found in the default path ({filePath}).");
+                    GenerateIniFile();
+                    throw new FileNotFoundException($"The settings file 'TaskTickr.ini' was not found in the default path ({filePath}). Generating new ini file in {filePath}");
                 }
 
                 var fileContent = File.ReadLines(filePath)
@@ -103,6 +104,23 @@ namespace TaskTickr.Domain.Services
                 throw;
             }
         }
-        #endregion
+
+        /// <summary>
+        /// Generates the default ini file.
+        /// </summary>
+        private void GenerateIniFile()
+        {
+            string iniFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TaskTickrSettings.ini");
+
+            string iniContent = @"
+                    [Settings]
+                    TargetInstanceURL = https://instance.atlassian.net
+                    Username = user@domain.com
+                    APIKey = insert_personal_api_token_key_here";
+
+            File.WriteAllText(iniFilePath, iniContent.Trim());
+            _supportLoggerService.AddLog($"Created default ini settings file in {iniFilePath}", LogLevel.Information);
+        }
     }
+    #endregion
 }
