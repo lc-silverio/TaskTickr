@@ -54,6 +54,7 @@
 4. When desired click on the `Stop` button to log you work time and reset the timer
 
 **Notes**
+- TaskTickr will only get the tasks where **you are the assignee**
 - TaskTickr will not log less than 1 minute of work (Sorry Flash)
 - TaskTickr will log your work time into a CSV file located in the install directory (`.\TaskTickr\logs\worklog.csv`)
 - TaskTickr logs application errors into a TXT file located in the (`.\TaskTickr\logs\log.csv`)
