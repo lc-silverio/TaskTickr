@@ -1,4 +1,4 @@
-﻿namespace TaskTickr.Services.Jira
+﻿namespace TaskTickr.Domain.DTO
 {
     /// <summary>
     /// Defines the structure of a Jira response object
