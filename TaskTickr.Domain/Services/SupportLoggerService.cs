@@ -1,7 +1,8 @@
 ﻿using Serilog;
-using TaskTickr.Enums;
+using TaskTickr.Domain.Interfaces;
+using TaskTickr.Shared.Enums;
 
-namespace TaskTickr.Services.SupportLogger
+namespace TaskTickr.Domain.Services
 {
     /// <summary>
     /// Defines methods related with logging

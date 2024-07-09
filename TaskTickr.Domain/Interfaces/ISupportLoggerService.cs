@@ -1,9 +1,9 @@
-﻿using TaskTickr.Enums;
+﻿using TaskTickr.Shared.Enums;
 
-namespace TaskTickr.Services.SupportLogger
+namespace TaskTickr.Domain.Interfaces
 {
     /// <summary>
-    /// Defines the interface for the Logger class that other classes should implement
+    /// Defines methods related with the handling of support related events
     /// </summary>
     public interface ISupportLoggerService
     {
