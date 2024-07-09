@@ -37,9 +37,7 @@ namespace TaskTickr.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("assignee=currentuser() AND status NOT IN (\'Declined\', \'Canceled\', \'Ready for test" +
-            "ing\', \'Released to Test\', \'Ready for Deployment\', \'Released to Production\', \'Don" +
-            "e\', \'Closed\')")]
+        [global::System.Configuration.DefaultSettingValueAttribute("assignee=currentuser() AND status NOT IN (STATUS_LIST)")]
         public string Jira_FilterQuery {
             get {
                 return ((string)(this["Jira_FilterQuery"]));

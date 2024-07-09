@@ -49,7 +49,7 @@ namespace TaskTickr.Domain.Services
             {
                 var iniSettings = ReadIniFile(_filePath);
 
-                if(iniSettings.Count == 0)
+                if (iniSettings.Count == 0)
                 {
                     throw new Exception("Failed to parse provided settings (Missing key, no value provided or settings file not found)");
                 }
@@ -58,7 +58,8 @@ namespace TaskTickr.Domain.Services
                 {
                     URL = iniSettings["TargetInstanceURL"],
                     Email = iniSettings["Username"],
-                    APIKey = iniSettings["APIKey"]
+                    APIKey = iniSettings["APIKey"],
+                    ExcludedTaskStatus = ParseExclusionFilter(iniSettings["ExcludedTaskStatus"])
                 };
             }
             catch (Exception ex)
@@ -121,6 +122,21 @@ namespace TaskTickr.Domain.Services
             File.WriteAllText(iniFilePath, iniContent.Trim());
             _supportLoggerService.AddLog($"Created default ini settings file in {iniFilePath}", LogLevel.Information);
         }
+
+        /// <summary>
+        /// Parses the exclusion filter.
+        /// </summary>
+        /// <param name="exclusionFilter">The exclusion filter.</param>
+        /// <returns>Returns the exclusion filters in a Jira supported format</returns>
+        private string ParseExclusionFilter(string exclusionFilter)
+        {
+            var statuses = exclusionFilter.Split(',')
+                                .Select(status => status.Trim())
+                                .Select(status => $"'{status}'");
+
+            return string.Join(", ", statuses);
+        }
+
     }
     #endregion
 }

@@ -24,6 +24,11 @@ namespace TaskTickr
         private readonly IWorkLoggerService _workLoggerService;
 
         /// <summary>
+        /// The settings service
+        /// </summary>
+        private readonly ISettingsService _settingsService;
+
+        /// <summary>
         /// The jira service
         /// </summary>
         private readonly IJiraService _jiraService;
@@ -54,7 +59,8 @@ namespace TaskTickr
         /// <param name="jiraService">The jira service.</param>
         /// <param name="supportLoggerService">The support logger service.</param>
         /// <param name="workLoggerService">The work logger service.</param>
-        public MainWindow(IJiraService jiraService, ISupportLoggerService supportLoggerService, IWorkLoggerService workLoggerService)
+        /// <param name="settingsService">The settings service.</param>
+        public MainWindow(IJiraService jiraService, ISupportLoggerService supportLoggerService, IWorkLoggerService workLoggerService, ISettingsService settingsService)
         {
             InitializeComponent();
             SetWindowStartingPosition();
@@ -62,11 +68,11 @@ namespace TaskTickr
             _jiraService = jiraService;
             _supportLoggerService = supportLoggerService;
             _workLoggerService = workLoggerService;
-
+            _settingsService = settingsService;
             _supportLoggerService.AddLog("Starting TaskTickr", LogLevel.Information);
 
             _timer = new System.Timers.Timer(1000); // 1 second intervals
-            _timer.Elapsed += OnTimedEvent;
+            _timer.Elapsed += OnTimedEvent!;
 
             GetTasks();
         }
@@ -76,7 +82,8 @@ namespace TaskTickr
         /// </summary>
         private async void GetTasks()
         {
-            _tasks = await _jiraService.GetUserTasks(Settings.Default.Jira_TaskSearchEndpoint, Settings.Default.Jira_FilterQuery);
+            var settings = _settingsService.GetSettings();
+            _tasks = await _jiraService.GetUserTasks(Settings.Default.Jira_TaskSearchEndpoint, Settings.Default.Jira_FilterQuery.Replace("STATUS_LIST", settings.ExcludedTaskStatus));
             var taskLabels = _tasks.Select(x => x.Fields.Summary).OrderBy(x => x).ToList();
 
             foreach (var task in taskLabels)

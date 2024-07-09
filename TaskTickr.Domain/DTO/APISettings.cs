@@ -28,5 +28,13 @@
         /// The API key
         /// </value>
         public required string APIKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the task status that should be excluded from the task search
+        /// </summary>
+        /// <value>
+        /// The task status that should be excluded
+        /// </value>
+        public required string ExcludedTaskStatus { get; set; }
     }
 }
