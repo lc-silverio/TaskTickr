@@ -6,64 +6,72 @@
         xmlns:local="clr-namespace:TaskTickr"
         mc:Ignorable="d"
         Title="TaskTickr"
-        Height="180"
+        Height="250"
         Width="350"
         ResizeMode="NoResize"
         VerticalAlignment="Bottom"
         HorizontalAlignment="Right"
-        WindowStartupLocation="Manual"
-        >
+        WindowStartupLocation="Manual">
 
     <!--Custom resources-->
     <Window.Resources>
-        <Style x:Key="NoHoverButtonStyle" TargetType="Button">
-            <!-- Disables style template with no hover effect-->
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="BorderBrush" Value="Transparent"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="BorderBrush" Value="Transparent"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
-        <Image 
-            x:Name="Logo" 
+        <Image x:Name="Logo" 
             HorizontalAlignment="Left" 
             Height="21" 
             Width="112"
-            Margin="10,10,0,0" 
+            Margin="10,3,0,0" 
             VerticalAlignment="Top" 
             Source="/Logo.png"
         />
 
-        <Button Name="DarkMode"
-                Width="20"
-                Height="18"
-                HorizontalAlignment="Right"
-                VerticalAlignment="top"
-                Margin="0,10,10,0"
+        <ComboBox Name="TaskSelector" 
+                  Width="278" 
+                  Height="20" 
+                  VerticalAlignment="Bottom" 
+                  Margin="0 0 0 3" 
+                  Style="{DynamicResource theComboBox}" 
+                  ItemContainerStyle="{DynamicResource theComboBoxItem}">
+        </ComboBox>
+
+        <TextBlock x:Name="TimerLabel" 
+                   Foreground="#297373"
+                   FontSize="60"
+                   TextAlignment="Center"
+                   Width="310"
+                   Height="68"
+                   HorizontalAlignment="Center"
+                   Margin="0,30,0,0"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Top"
+                   Text="00:00:00"
+                   />
+
+        <Button x:Name="StartTimer"
+                Margin="81,105,209,49"
+                BorderThickness="0"
+                Background="Transparent"
+                Height="30"
+                Width="30"
+                Style="{StaticResource NoHoverButtonStyle}" Click="Start">
+            <Image VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Start.png" Height="30" Width="30"></Image>
+        </Button>
+
+        <Button x:Name="StopTimer" 
+                Margin="210,105,80,49"
                 BorderThickness="0"
                 Background="Transparent" 
-                Style="{StaticResource NoHoverButtonStyle}"
-                >
-            <Image Source="/Moon.png"></Image>
+                Height="30" 
+                Width="30"
+                Style="{StaticResource NoHoverButtonStyle}" Click="Stop" >
+            <Image VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Stop.png" Height="30" Width="30"></Image>
         </Button>
     </Grid>
 </Window>
