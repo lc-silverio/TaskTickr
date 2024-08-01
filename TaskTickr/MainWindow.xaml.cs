@@ -5,6 +5,7 @@ using TaskTickr.Properties;
 using TaskTickr.Domain.DTO;
 using System.Windows.Media;
 using System.Timers;
+using System.ComponentModel;
 
 namespace TaskTickr
 {
@@ -13,6 +14,7 @@ namespace TaskTickr
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Properties
         /// <summary>
         /// The logger handler
         /// </summary>
@@ -36,7 +38,7 @@ namespace TaskTickr
         /// <summary>
         /// The tasks
         /// </summary>
-        private IEnumerable<JiraTask> _tasks;
+        private IEnumerable<JiraTask> _tasks = [];
 
         /// <summary>
         /// The start date
@@ -53,6 +55,9 @@ namespace TaskTickr
         /// </summary>
         private TimeSpan _elapsedTime;
 
+        #endregion
+
+        #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow" /> class.
         /// </summary>
@@ -75,22 +80,9 @@ namespace TaskTickr
             _timer.Elapsed += OnTimedEvent!;
 
             GetTasks();
+            DisplayTrayIcon();
         }
-
-        /// <summary>
-        /// Gets the task names and adds them to the combo-box
-        /// </summary>
-        private async void GetTasks()
-        {
-            var settings = _settingsService.GetSettings();
-            _tasks = await _jiraService.GetUserTasks(Settings.Default.Jira_TaskSearchEndpoint, Settings.Default.Jira_FilterQuery.Replace("STATUS_LIST", settings.ExcludedTaskStatus));
-            var taskLabels = _tasks.Select(x => x.Fields.Summary).OrderBy(x => x).ToList();
-
-            foreach (var task in taskLabels)
-            {
-                TaskSelector.Items.Add(task);
-            }
-        }
+        #endregion
 
         /// <summary>
         /// Definies starting position of the window on the primary screen
@@ -107,17 +99,44 @@ namespace TaskTickr
             this.Top = screenSize.Bottom - this.Height;
         }
 
+        #region Tasks
+        /// <summary>
+        /// Gets the task names and adds them to the combo-box
+        /// </summary>
+        private async void GetTasks()
+        {
+            CleanTasks();
+
+            var settings = _settingsService.GetSettings();
+            var taskLabels = await _jiraService.GetTaskNames(Settings.Default.Jira_TaskSearchEndpoint, Settings.Default.Jira_FilterQuery.Replace("STATUS_LIST", settings.ExcludedTaskStatus));
+
+            foreach (var task in taskLabels)
+            {
+                TaskSelector.Items.Add(task);
+            }
+        }
+
+        /// <summary>
+        /// Removes all existing tasks from the task drop-down selector
+        /// </summary>
+        private void CleanTasks()
+        {
+            TaskSelector.Items.Clear();
+        }
+        #endregion
+
+        #region Timer
         /// <summary>
         /// Starts the timer.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The e.</param>
         /// <exception cref="System.ArgumentException">No task has been selected</exception>
-        private void Start(object sender, RoutedEventArgs e)
+        private void Start(object sender, EventArgs e)
         {
             if (TaskSelector.SelectedItem == null)
             {
-                MessageBox.Show("No task has been selected", "Warning!");
+                System.Windows.MessageBox.Show("Failed to start timer. No task has been selected", "Warning!");
                 DisableUserControls();
                 return;
             }
@@ -135,16 +154,23 @@ namespace TaskTickr
         /// Stops the timer.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The e.</param>
         /// <exception cref="System.Exception">Cannot log less than 1 work minute</exception>
-        private void Stop(object sender, RoutedEventArgs e)
+        private void Stop(object sender, EventArgs e)
         {
+            if (_timer == null || !_timer.Enabled)
+            {
+                System.Windows.MessageBox.Show("Failed to stop timer. No timer is running.", "Warning");
+                _supportLoggerService.AddLog("Attempted to stop a timer that was not started.", LogLevel.Error);
+                return;
+            }
+
             _timer.Stop();
-            _supportLoggerService.AddLog($"Timer stoped for task {TaskSelector.SelectedValue}", LogLevel.Information);
+            _supportLoggerService.AddLog($"Timer stopped for task {TaskSelector.SelectedValue}", LogLevel.Information);
 
             if (_elapsedTime.TotalSeconds < 60)
             {
-                MessageBox.Show("Cannot log less than 1 work minute", "Warning");
+                System.Windows.MessageBox.Show("Cannot log less than 1 work minute", "Warning");
                 _supportLoggerService.AddLog("Cannot log less than 1 work minute", LogLevel.Error);
 
                 _elapsedTime = TimeSpan.Zero;
@@ -163,7 +189,21 @@ namespace TaskTickr
             // Reload tasks
             GetTasks();
             EnableUserControls();
-            MessageBox.Show("Task time logged successfully", "Good work!");
+            System.Windows.MessageBox.Show("Task time logged successfully", "Good work!");
+        }
+        #endregion
+
+        #region User controls
+
+        /// <summary>
+        /// Disables the user controls.
+        /// </summary>
+        private void EnableUserControls()
+        {
+            StartTimer.IsEnabled = true;
+            StopTimer.IsEnabled = false;
+            TaskSelector.IsEnabled = true;
+            TaskSelector.Background = System.Windows.Media.Brushes.Transparent;
         }
 
         /// <summary>
@@ -172,20 +212,40 @@ namespace TaskTickr
         private void DisableUserControls()
         {
             StartTimer.IsEnabled = false;
+            StopTimer.IsEnabled = true;
             TaskSelector.IsEnabled = false;
             TaskSelector.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#E6E6E6"))!;
         }
 
         /// <summary>
-        /// Disables the user controls.
+        /// Displays the tray icon.
         /// </summary>
-        private void EnableUserControls()
+        private void DisplayTrayIcon()
         {
-            StartTimer.IsEnabled = true;
-            TaskSelector.IsEnabled = true;
-            TaskSelector.Background = Brushes.Transparent;
+            var _notifyIcon = new NotifyIcon
+            {
+                Icon = new Icon("icon.ico"),
+                Visible = true,
+                Text = "TaskTickr",
+                ContextMenuStrip = new ContextMenuStrip(),
+            };
+
+            _notifyIcon.ContextMenuStrip.Items.Add("Open TaskTickr", null, ShowApplication);
+            _notifyIcon.ContextMenuStrip.Items.Add("Start timer", null, Start);
+            _notifyIcon.ContextMenuStrip.Items.Add("Stop timer", null, Stop);
+            _notifyIcon.ContextMenuStrip.Items.Add("Exit TaskTickr", null, (sender, args) => System.Windows.Application.Current.Shutdown());
+
+            _notifyIcon.DoubleClick += ShowApplication;
         }
 
+        private void ShowApplication(object? sender, EventArgs eventArgs)
+        {
+            Show();
+            WindowState = WindowState.Normal;
+        }
+        #endregion
+
+        #region Events
         /// <summary>
         /// Updates the displayed time
         /// </summary>
@@ -196,6 +256,38 @@ namespace TaskTickr
             _elapsedTime = _elapsedTime.Add(TimeSpan.FromSeconds(1));
             Dispatcher.Invoke(() => TimerLabel.Text = _elapsedTime.ToString(@"hh\:mm\:ss"));
         }
-    }
 
+        /// <summary>
+        /// Prevents the user from closing the application without stopping the timer
+        /// </summary>
+        /// <param name="eventData">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
+        protected override void OnClosing(CancelEventArgs eventData)
+        {
+            if (_timer.Enabled)
+            {
+                var result = System.Windows.MessageBox.Show("The timer is still running. Are you sure you want to exit?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.No)
+                {
+                    eventData.Cancel = true;
+                    return;
+                }
+
+                Dispatcher.Invoke(() => Stop(null, null));
+            }
+
+            base.OnClosing(eventData);
+        }
+
+        // Override OnStateChanged to minimize to tray instead of task bar.
+        /// </summary>
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                Hide();
+            }
+            base.OnStateChanged(e);
+        }
+        #endregion
+    }
 }

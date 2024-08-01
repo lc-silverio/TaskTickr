@@ -6,7 +6,7 @@ using TaskTickr.Domain.Services;
 
 namespace TaskTickr
 {
-    public partial class App : Application
+    public partial class App : System.Windows.Application
     {
         /// <summary>
         /// Gets the application host.
@@ -108,7 +108,7 @@ namespace TaskTickr
                 // Log the exception if necessary
                 // LogException(ex);
 
-                MessageBox.Show(ex.Message, "Warning");
+                System.Windows.MessageBox.Show(ex.Message, "Warning");
             }
         }
     }

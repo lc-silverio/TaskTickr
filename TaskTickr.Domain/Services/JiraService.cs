@@ -65,7 +65,7 @@ namespace TaskTickr.Domain.Services
         /// Returns the users tasks
         /// </returns>
         /// <exception cref="System.Exception">Failed to get tasks for user {_settings.UserName} with error {response.StatusCode} and message {response.ReasonPhrase}</exception>
-        public async Task<IEnumerable<JiraTask>> GetUserTasks(string targetEndpoint, string filterQuery)
+        private async Task<IEnumerable<JiraTask>> GetUserTasks(string targetEndpoint, string filterQuery)
         {
             try
             {
@@ -77,13 +77,7 @@ namespace TaskTickr.Domain.Services
                 }
 
                 var content = await response.Content.ReadAsStringAsync();
-                var jiraResponse = JsonConvert.DeserializeObject<JiraResponse>(content);
-
-                if (jiraResponse == null)
-                {
-                    throw new Exception($"Failed to deserialize tasks for user {_settings.Email}");
-                }
-
+                var jiraResponse = JsonConvert.DeserializeObject<JiraResponse>(content) ?? throw new Exception($"Failed to deserialize tasks for user {_settings.Email}");
                 _supportLoggerService.AddLog($"Loaded tasks for user {_settings.Email}", LogLevel.Information);
                 return jiraResponse.Issues;
             }
@@ -94,6 +88,21 @@ namespace TaskTickr.Domain.Services
             }
         }
 
+        /// <summary>
+        /// Gets the task names.
+        /// </summary>
+        /// <param name="targetEndpoint">The target endpoint.</param>
+        /// <param name="filterQuery">The filter query.</param>
+        /// <returns>Returns a list of task names</returns>
+        public async Task<List<string>> GetTaskNames(string targetEndpoint, string filterQuery)
+        {
+            var result = await GetUserTasks(targetEndpoint, filterQuery);
+
+            return result
+                .Select(x => x.Fields.Summary)
+                .OrderBy(x => x)
+                .ToList();
+        }
 
         /// <summary>
         /// Logs the task time.
@@ -111,7 +120,7 @@ namespace TaskTickr.Domain.Services
                 var worklog = $@"
                     {{
                         ""timeSpentSeconds"": {(int)timeElapsed.TotalSeconds},
-                        ""started"": ""{(startDate.ToString("yyyy-MM-ddThh:mm:ss") + ".000+0000").ToString()}""
+                        ""started"": ""{startDate.ToString("yyyy-MM-ddThh:mm:ss") + ".000+0000"}""
                     }}";
 
                 var content = new StringContent(worklog, null, "application/json");

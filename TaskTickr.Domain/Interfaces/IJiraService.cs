@@ -9,14 +9,12 @@ namespace TaskTickr.Domain.Interfaces
     public interface IJiraService
     {
         /// <summary>
-        /// Gets the user tasks.
+        /// Gets the task names.
         /// </summary>
         /// <param name="targetEndpoint">The target endpoint.</param>
         /// <param name="filterQuery">The filter query.</param>
-        /// <returns>
-        /// Returns the users tasks
-        /// </returns>
-        Task<IEnumerable<JiraTask>> GetUserTasks(string targetEndpoint, string filterQuery);
+        /// <returns>Returns a list of task names</returns>
+        Task<List<string>> GetTaskNames(string targetEndpoint, string filterQuery);
 
         /// <summary>
         /// Logs the task time.
