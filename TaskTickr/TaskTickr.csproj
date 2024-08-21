@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <None Remove="Logo.png" />
+    <None Remove="Reload.png" />
     <None Remove="Start.png" />
     <None Remove="Stop.png" />
   </ItemGroup>
@@ -45,6 +46,7 @@
 
   <ItemGroup>
     <Resource Include="Logo.png" />
+    <Resource Include="Reload.png" />
     <Resource Include="Start.png" />
     <Resource Include="Stop.png" />
   </ItemGroup>

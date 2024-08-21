@@ -123,6 +123,16 @@ namespace TaskTickr
         {
             TaskSelector.Items.Clear();
         }
+
+        /// <summary>
+        /// Reloads the tasks.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void ReloadTasks(object sender, RoutedEventArgs e)
+        {
+            GetTasks();
+        }
         #endregion
 
         #region Timer
@@ -203,6 +213,7 @@ namespace TaskTickr
             StartTimer.IsEnabled = true;
             StopTimer.IsEnabled = false;
             TaskSelector.IsEnabled = true;
+            Reload.IsEnabled = true;
             TaskSelector.Background = System.Windows.Media.Brushes.Transparent;
         }
 
@@ -214,6 +225,7 @@ namespace TaskTickr
             StartTimer.IsEnabled = false;
             StopTimer.IsEnabled = true;
             TaskSelector.IsEnabled = false;
+            Reload.IsEnabled = false;
             TaskSelector.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#E6E6E6"))!;
         }
 
