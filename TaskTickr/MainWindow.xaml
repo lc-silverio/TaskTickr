@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="TaskTickr"
         Height="250"
-        Width="350"
+        Width="384"
         ResizeMode="CanMinimize"
         VerticalAlignment="Bottom"
         HorizontalAlignment="Right"
@@ -23,6 +23,15 @@
     </Window.Resources>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
         <Image x:Name="Logo" 
                 HorizontalAlignment="Left" 
                 Height="21" 
@@ -36,7 +45,7 @@
                       Width="278" 
                       Height="20" 
                       VerticalAlignment="Bottom" 
-                      Margin="0 0 0 3" 
+                      Margin="0 0 0 20" 
                       Style="{DynamicResource theComboBox}" 
                       ItemContainerStyle="{DynamicResource theComboBoxItem}">
         </ComboBox>
@@ -72,6 +81,18 @@
                     Width="30"
                     Style="{StaticResource NoHoverButtonStyle}" Click="Stop" >
             <Image VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Stop.png" Height="30" Width="30"></Image>
+        </Button>
+
+        <Button x:Name="Reload"
+                HorizontalAlignment="Right" 
+                Margin="0,10,15,200" 
+                Width="15"
+                Height="15"
+                Background="Transparent"
+                BorderThickness="0"
+                Style="{StaticResource NoHoverButtonStyle}"
+                Click="ReloadTasks">
+            <Image VerticalAlignment="Top" HorizontalAlignment="Center" Source="/Reload.png" Height="15" Width="15"/>
         </Button>
     </Grid>
 </Window>
