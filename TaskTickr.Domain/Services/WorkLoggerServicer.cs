@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using Serilog.Events;
 using System.IO;
+using System.Reflection;
 using TaskTickr.Domain.Interfaces;
 
 namespace TaskTickr.Domain.Services
@@ -19,7 +20,7 @@ namespace TaskTickr.Domain.Services
         /// <summary>
         /// The log file path
         /// </summary>
-        private readonly string logFilePath = $"{AppDomain.CurrentDomain.BaseDirectory}\\logs\\worklog.csv";
+        private readonly string logFilePath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\logs\\worklog.csv";
         #endregion
 
         #region Constructor        
