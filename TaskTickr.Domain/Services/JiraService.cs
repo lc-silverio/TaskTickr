@@ -65,7 +65,7 @@ namespace TaskTickr.Domain.Services
         /// Returns the users tasks
         /// </returns>
         /// <exception cref="System.Exception">Failed to get tasks for user {_settings.UserName} with error {response.StatusCode} and message {response.ReasonPhrase}</exception>
-        private async Task<IEnumerable<JiraTask>> GetUserTasks(string targetEndpoint, string filterQuery)
+        public async Task<IEnumerable<JiraTask>> GetUserTasks(string targetEndpoint, string filterQuery)
         {
             try
             {
@@ -86,6 +86,19 @@ namespace TaskTickr.Domain.Services
                 _supportLoggerService.AddLog(ex.Message, LogLevel.Error);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Gets the task names from list.
+        /// </summary>
+        /// <param name="tasks">The tasks.</param>
+        /// <returns>Returns the task names</returns>
+        public List<string>GetTaskNamesFromList(IEnumerable<JiraTask> tasks)
+        {
+            return tasks
+                .Select(x => x.Fields.Summary)
+                .OrderBy(x => x)
+                .ToList();
         }
 
         /// <summary>

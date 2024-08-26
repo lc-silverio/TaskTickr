@@ -26,5 +26,22 @@ namespace TaskTickr.Domain.Interfaces
         /// <param name="targetEndpoint">The target endpoint.</param>
         /// <returns></returns>
         Task LogTaskTime(int taskId, string taskName, TimeSpan timeElapsed, DateTime startDate, string targetEndpoint);
+
+        /// <summary>
+        /// Gets the user tasks.
+        /// </summary>
+        /// <param name="targetEndpoint"></param>
+        /// <param name="filterQuery"></param>
+        /// <returns>
+        /// Returns the users tasks
+        /// </returns>
+        Task<IEnumerable<JiraTask>> GetUserTasks(string targetEndpoint, string filterQuery);
+
+        /// <summary>
+        /// Gets the task names from list.
+        /// </summary>
+        /// <param name="tasks">The tasks.</param>
+        /// <returns>Returns the task names</returns>
+        List<string> GetTaskNamesFromList(IEnumerable<JiraTask> tasks);
     }
 }

@@ -108,7 +108,8 @@ namespace TaskTickr
             CleanTasks();
 
             var settings = _settingsService.GetSettings();
-            var taskLabels = await _jiraService.GetTaskNames(Settings.Default.Jira_TaskSearchEndpoint, Settings.Default.Jira_FilterQuery.Replace("STATUS_LIST", settings.ExcludedTaskStatus));
+            _tasks = await _jiraService.GetUserTasks(Settings.Default.Jira_TaskSearchEndpoint, Settings.Default.Jira_FilterQuery.Replace("STATUS_LIST", settings.ExcludedTaskStatus));
+            var taskLabels = _jiraService.GetTaskNamesFromList(_tasks);
 
             foreach (var task in taskLabels)
             {
